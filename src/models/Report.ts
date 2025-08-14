@@ -4,7 +4,8 @@ export interface IReport extends Document {
   _id: string;
   reportName: string;
   reportDescription: string;
-  subjectsArray: mongoose.Types.ObjectId[];
+  reportImage: mongoose.Types.ObjectId;
+  index?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,10 +20,13 @@ const ReportSchema = new Schema<IReport>({
     type: String,
     trim: true
   },
-  subjectsArray: [{
+  reportImage: {
     type: Schema.Types.ObjectId,
-    ref: 'Subject'
-  }]
+    ref: 'File'
+  },
+  index: {
+    type: Number
+  }
 }, {
   timestamps: true
 });

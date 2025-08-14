@@ -6,6 +6,8 @@ export interface IUser extends Document {
   armyId: string; // personalNumber
   createdAt: Date;
   updatedAt: Date;
+  lastVisitedSlide: mongoose.Types.ObjectId;
+  passedBiases: boolean;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -19,6 +21,15 @@ const UserSchema = new Schema<IUser>({
     required: true,
     unique: true,
     trim: true
+  },
+  lastVisitedSlide: {
+    type: Schema.Types.ObjectId,
+    ref: 'Slide',
+    default: null
+  },
+  passedBiases: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
