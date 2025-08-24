@@ -1,5 +1,6 @@
 import Report, { IReport } from '../models/Report';
-import Subject from '../models/Subject';
+import Subject, { ISubject } from '../models/Subject';
+import Slide, { ISlide } from '../models/Slide';
 
 export class ReportService {
   // Get all reports
@@ -56,6 +57,41 @@ export class ReportService {
     return await Subject.find({ inReport: reportId })
       .select('-__v')
       .sort({ index: 1 });
+  }
+
+  // Create complete report with subjects and slides
+  static async createCompleteReport(reportData: {
+    report: Partial<IReport>;
+    subjects: Array<{
+      subject: Partial<ISubject>;
+      slides: Partial<ISlide>[];
+    }>;
+  }): Promise<IReport> {
+    // Create the report first
+    const report = new Report(reportData.report);
+    const savedReport = await report.save();
+
+    // Create subjects for this report
+    for (let i = 0; i < reportData.subjects.length; i++) {
+      const subjectData = reportData.subjects[i];
+      const subject = new Subject({
+        ...subjectData.subject,
+        inReport: savedReport._id,
+      });
+      const savedSubject = await subject.save();
+
+      // Create slides for this subject
+      for (let j = 0; j < subjectData.slides.length; j++) {
+        const slideData = subjectData.slides[j];
+        const slide = new Slide({
+          ...slideData,
+          inSubject: savedSubject._id,
+        });
+        await slide.save();
+      }
+    }
+
+    return savedReport;
   }
 }
 

@@ -12,6 +12,9 @@ router.get('/:id', ReportController.getReportById);
 // POST create new report
 router.post('/', ReportController.createReport);
 
+// POST create complete report with subjects and slides
+router.post('/complete', ReportController.createCompleteReport);
+
 // PUT update report
 router.put('/:id', ReportController.updateReport);
 

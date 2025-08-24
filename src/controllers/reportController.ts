@@ -137,5 +137,56 @@ export class ReportController {
       });
     }
   }
+
+
+
+  // POST create complete report with subjects and slides
+  static async createCompleteReport(req: Request, res: Response): Promise<void> {
+    try {
+      const { report, subjects } = req.body;
+
+      // Validate required fields
+      if (!report || !report.reportName) {
+        res.status(400).json({
+          success: false,
+          error: 'Report data with reportName is required'
+        });
+        return;
+      }
+
+      if (!subjects || !Array.isArray(subjects) || subjects.length === 0) {
+        res.status(400).json({
+          success: false,
+          error: 'Subjects array is required and must not be empty'
+        });
+        return;
+      }
+
+      // Validate each subject has required fields
+      for (const subjectData of subjects) {
+        if (!subjectData.subject || !subjectData.subject.subjectName) {
+          res.status(400).json({
+            success: false,
+            error: 'Each subject must have a subjectName'
+          });
+          return;
+        }
+      }
+
+      const completeReport = await ReportService.createCompleteReport({ report, subjects });
+      
+      res.status(201).json({
+        success: true,
+        data: completeReport,
+        message: 'Complete report created successfully'
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to create complete report',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
 }
 
