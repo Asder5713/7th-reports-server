@@ -7,7 +7,8 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
   lastVisitedSlide: mongoose.Types.ObjectId;
-  passedBiases: boolean;
+  didPassBiases: boolean;
+  didConfirmConfidentiality: boolean;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -27,7 +28,11 @@ const UserSchema = new Schema<IUser>({
     ref: 'Slide',
     default: null
   },
-  passedBiases: {
+  didPassBiases: {
+    type: Boolean,
+    default: false
+  },
+  didConfirmConfidentiality: {
     type: Boolean,
     default: false
   }
