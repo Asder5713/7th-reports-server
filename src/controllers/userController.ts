@@ -164,5 +164,41 @@ export class UserController {
       });
     }
   }
+
+  // PATCH set user confidentiality
+  static async setConfidentiality(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      
+      if (!id) {
+        res.status(400).json({
+          success: false,
+          error: 'User ID is required'
+        });
+        return;
+      }
+
+      const user = await UserService.updateUser(id, { didConfirmConfidentiality: true });
+      if (!user) {
+        res.status(404).json({
+          success: false,
+          error: 'User not found'
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        data: user,
+        message: 'User confidentiality set successfully'
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to set user confidentiality',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
 }
 

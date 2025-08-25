@@ -21,4 +21,7 @@ router.delete('/:id', UserController.deleteUser);
 // GET check user permissions
 router.get('/permissions/:userId', UserController.checkUserPermissions);
 
+// PATCH set user confidentiality
+router.patch('/:id/confidentiality', UserController.setConfidentiality);
+
 export default router; 
