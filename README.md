@@ -38,11 +38,12 @@ cd 7th-reports-server
 npm install
 ```
 
-3. Set up environment variables (optional):
+3. Set up environment variables:
 ```bash
 # Create a .env file
 MONGODB_URI=mongodb://localhost:27017/7th-reports
 PORT=3000
+API_SECRET_KEY=your-secret-key-here
 ```
 
 4. Start the development server:
@@ -52,11 +53,48 @@ npm run dev
 
 5. Build for production:
 ```bash
-npm run build
+npm build
 npm start
 ```
 
+## Authentication
+
+All API endpoints require authentication using a secret API key. You can provide the key in one of two ways:
+
+### Option 1: X-API-Key Header
+```bash
+curl -H "X-API-Key: your-secret-key-here" http://localhost:3000/api/users
+```
+
+### Option 2: Authorization Header (Bearer Token)
+```bash
+curl -H "Authorization: Bearer your-secret-key-here" http://localhost:3000/api/users
+```
+
+### In Postman
+- Add header: `X-API-Key` with value `your-secret-key-here`
+- Or add header: `Authorization` with value `Bearer your-secret-key-here`
+
+### In React/Frontend
+```javascript
+const response = await fetch('/api/users', {
+  headers: {
+    'X-API-Key': 'your-secret-key-here',
+    'Content-Type': 'application/json'
+  }
+});
+```
+
+**Important**: Change the default secret key in your `.env` file to a secure random string in production.
+
 ## API Endpoints
+
+### Public Endpoints (No Authentication Required)
+- `GET /` - Server welcome message and API overview
+- `GET /health` - Server health status
+
+### Protected Endpoints (Authentication Required)
+All endpoints under `/api/*` require authentication using the API key.
 
 ### Base URL
 ```

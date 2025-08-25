@@ -1,5 +1,10 @@
+import dotenv from 'dotenv';
+// Load environment variables first
+dotenv.config();
+
 import express, { Request, Response, NextFunction } from 'express';
 import { connectDB } from './config/database';
+import { authenticateRequest } from './middleware/auth';
 
 // Import routes
 import usersRouter from './routes/users';
@@ -56,12 +61,12 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
-// API Routes
-app.use('/api/users', usersRouter);
-app.use('/api/subjects', subjectsRouter);
-app.use('/api/slides', slidesRouter);
-app.use('/api/reports', reportsRouter);
-app.use('/api/files', filesRouter);
+// API Routes - all protected with authentication
+app.use('/api/users', authenticateRequest, usersRouter);
+app.use('/api/subjects', authenticateRequest, subjectsRouter);
+app.use('/api/slides', authenticateRequest, slidesRouter);
+app.use('/api/reports', authenticateRequest, reportsRouter);
+app.use('/api/files', authenticateRequest, filesRouter);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
