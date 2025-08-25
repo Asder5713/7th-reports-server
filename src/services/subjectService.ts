@@ -1,5 +1,5 @@
 import Subject, { ISubject } from '../models/Subject';
-import Slide from '../models/Slide';
+import { SlideService } from './slideService';
 
 export class SubjectService {
   // Get all subjects
@@ -54,9 +54,7 @@ export class SubjectService {
 
   // Get slides for a specific subject
   static async getSlidesForSubject(subjectId: string): Promise<any[]> {
-    return await Slide.find({ inSubject: subjectId })
-      .select('-__v')
-      .sort({ index: 1 });
+    return await SlideService.getSlidesBySubject(subjectId);
   }
 }
 

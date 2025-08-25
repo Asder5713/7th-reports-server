@@ -1,6 +1,9 @@
 import Report, { IReport } from '../models/Report';
-import Subject, { ISubject } from '../models/Subject';
-import Slide, { ISlide } from '../models/Slide';
+import { SubjectService } from './subjectService';
+import { SlideService } from './slideService';
+import { ISubject } from '../models/Subject';
+import { ISlide } from '../models/Slide';
+import mongoose from 'mongoose';
 
 export class ReportService {
   // Get all reports
@@ -54,9 +57,7 @@ export class ReportService {
 
   // Get subjects for a specific report
   static async getSubjectsForReport(reportId: string): Promise<any[]> {
-    return await Subject.find({ inReport: reportId })
-      .select('-__v')
-      .sort({ index: 1 });
+    return await SubjectService.getSubjectsByReport(reportId);
   }
 
   // Create complete report with subjects and slides
@@ -71,23 +72,19 @@ export class ReportService {
     const report = new Report(reportData.report);
     const savedReport = await report.save();
 
-    // Create subjects for this report
-    for (let i = 0; i < reportData.subjects.length; i++) {
-      const subjectData = reportData.subjects[i];
-      const subject = new Subject({
+    // Create subjects and slides using their respective services
+    for (const subjectData of reportData.subjects) {
+      const savedSubject = await SubjectService.createSubject({
         ...subjectData.subject,
-        inReport: savedReport._id,
+        inReport: new mongoose.Types.ObjectId(savedReport._id),
       });
-      const savedSubject = await subject.save();
 
       // Create slides for this subject
-      for (let j = 0; j < subjectData.slides.length; j++) {
-        const slideData = subjectData.slides[j];
-        const slide = new Slide({
+      for (const slideData of subjectData.slides) {
+        await SlideService.createSlide({
           ...slideData,
-          inSubject: savedSubject._id,
+          inSubject: new mongoose.Types.ObjectId(savedSubject._id),
         });
-        await slide.save();
       }
     }
 
