@@ -223,20 +223,21 @@ router.get("/v1/topics/:topicId/slides", async (req: Request<{
     hasMoreNext,
     hasMorePrev,
   });
-}),
-  router.get("/:topicId/slides:last-cursor", async (req, res) => {
-    try {
-      const topicId = new Types.ObjectId(req.params.topicId);
-      const last = await Slide.findOne({ topicId }).sort({ position: -1, _id: -1 }).select({ position: 1 }).lean();
-      if (!last) return res.json({ lastCursor: null });
-      res.json({ lastCursor: { cursorPos: last.position, cursorId: String(last._id) } });
-    } catch (err) {
+});
 
-      res.status(400).json({
-        error: {
-          code: "BadRequest", message: err instanceof Error ? err.message : err
-        }
-      });
-    }
-  });
+router.get("/:topicId/slides:last-cursor", async (req, res) => {
+  try {
+    const topicId = new Types.ObjectId(req.params.topicId);
+    const last = await Slide.findOne({ topicId }).sort({ position: -1, _id: -1 }).select({ position: 1 }).lean();
+    if (!last) return res.json({ lastCursor: null });
+    res.json({ lastCursor: { cursorPos: last.position, cursorId: String(last._id) } });
+  } catch (err) {
+
+    res.status(400).json({
+      error: {
+        code: "BadRequest", message: err instanceof Error ? err.message : err
+      }
+    });
+  }
+});
 export default router;
