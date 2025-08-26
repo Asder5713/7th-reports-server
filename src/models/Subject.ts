@@ -2,24 +2,31 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ISubject extends Document {
   _id: string;
-  subjectName: string;
-  slideArray: mongoose.Types.ObjectId[];
+  title: string;
+  orderIndex: number;
+  slidesAmount: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
+//TODO Consider rename topic
 const SubjectSchema = new Schema<ISubject>({
-  subjectName: {
+  title: {
     type: String,
     required: true,
     trim: true
   },
-  slideArray: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Slide'
-  }]
+  slidesAmount: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  orderIndex: { type: Number, required: true },
+
 }, {
   timestamps: true
 });
 
-export default mongoose.model<ISubject>('Subject', SubjectSchema); 
+SubjectSchema.index({ reportId: 1, orderIndex: 1 }, { unique: true });
+
+export default mongoose.model<ISubject>('Subject', SubjectSchema);

@@ -2,29 +2,26 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IReport extends Document {
   _id: string;
-  reportName: string;
-  reportDescription: string;
-  subjectsArray: mongoose.Types.ObjectId[];
+  title: string;
+  description: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const ReportSchema = new Schema<IReport>({
-  reportName: {
+  title: {
     type: String,
     required: true,
     trim: true
   },
-  reportDescription: {
+  description: {
     type: String,
     trim: true
   },
-  subjectsArray: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Subject'
-  }]
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 }, {
   timestamps: true
 });
 
-export default mongoose.model<IReport>('Report', ReportSchema); 
+export default mongoose.model<IReport>('Report', ReportSchema);
