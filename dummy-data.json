@@ -1,0 +1,259 @@
+{
+  "completeReport1": {
+    "report": {
+      "reportName": "Mathematics Fundamentals",
+      "reportDescription": "Complete mathematics curriculum covering algebra, geometry, and calculus",
+      "reportImage": "math-course-image-001"
+    },
+    "subjects": [
+      {
+        "subject": {
+          "subjectName": "Algebra Basics"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "Introduction to Algebra",
+              "description": "Learn the fundamental concepts of algebra",
+              "examples": ["2x + 3 = 7", "x - 5 = 10"],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Linear Equations",
+              "description": "Solving equations with one variable",
+              "examples": ["3x + 2 = 8", "5x - 3 = 12"],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Quadratic Equations",
+              "description": "Introduction to quadratic equations",
+              "examples": ["x² + 5x + 6 = 0", "2x² - 7x + 3 = 0"],
+              "difficulty": "intermediate"
+            }
+          }
+        ]
+      },
+      {
+        "subject": {
+          "subjectName": "Geometry Fundamentals"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "Basic Shapes",
+              "description": "Understanding geometric shapes and properties",
+              "shapes": ["circle", "square", "triangle", "rectangle"],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Area and Perimeter",
+              "description": "Calculating area and perimeter of shapes",
+              "formulas": {
+                "square": "A = s², P = 4s",
+                "rectangle": "A = l × w, P = 2(l + w)",
+                "circle": "A = πr², C = 2πr"
+              },
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Pythagorean Theorem",
+              "description": "a² + b² = c²",
+              "examples": ["3-4-5 triangle", "5-12-13 triangle"],
+              "difficulty": "intermediate"
+            }
+          }
+        ]
+      },
+      {
+        "subject": {
+          "subjectName": "Calculus Introduction"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "What is Calculus?",
+              "description": "Introduction to the study of continuous change",
+              "concepts": ["limits", "derivatives", "integrals"],
+              "difficulty": "advanced"
+            }
+          },
+          {
+            "content": {
+              "title": "Limits",
+              "description": "Understanding the concept of limits",
+              "examples": ["lim(x→2) x²", "lim(x→0) sin(x)/x"],
+              "difficulty": "advanced"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "completeReport2": {
+    "report": {
+      "reportName": "Computer Science Essentials",
+      "reportDescription": "Comprehensive computer science course covering programming fundamentals and data structures",
+      "reportImage": "cs-course-image-002"
+    },
+    "subjects": [
+      {
+        "subject": {
+          "subjectName": "Programming Fundamentals"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "What is Programming?",
+              "description": "Introduction to computer programming concepts",
+              "languages": ["Python", "JavaScript", "Java"],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Variables and Data Types",
+              "description": "Understanding variables, strings, numbers, and booleans",
+              "examples": {
+                "string": "name = 'John'",
+                "number": "age = 25",
+                "boolean": "isStudent = true"
+              },
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Control Structures",
+              "description": "If statements, loops, and decision making",
+              "examples": {
+                "if": "if age >= 18: print('Adult')",
+                "for": "for i in range(5): print(i)",
+                "while": "while count > 0: count -= 1"
+              },
+              "difficulty": "beginner"
+            }
+          }
+        ]
+      },
+      {
+        "subject": {
+          "subjectName": "Data Structures"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "Arrays and Lists",
+              "description": "Understanding ordered collections of data",
+              "operations": ["access", "insert", "delete", "search"],
+              "difficulty": "intermediate"
+            }
+          },
+          {
+            "content": {
+              "title": "Stacks and Queues",
+              "description": "LIFO and FIFO data structures",
+              "examples": {
+                "stack": "Browser back button",
+                "queue": "Print job queue"
+              },
+              "difficulty": "intermediate"
+            }
+          },
+          {
+            "content": {
+              "title": "Trees and Graphs",
+              "description": "Hierarchical and network data structures",
+              "applications": ["file systems", "social networks", "routing"],
+              "difficulty": "advanced"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "completeReport3": {
+    "report": {
+      "reportName": "Physics for Beginners",
+      "reportDescription": "Introduction to fundamental physics concepts and principles",
+      "reportImage": "physics-course-image-003"
+    },
+    "subjects": [
+      {
+        "subject": {
+          "subjectName": "Mechanics"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "Motion and Forces",
+              "description": "Understanding how objects move and what causes motion",
+              "concepts": ["velocity", "acceleration", "force", "mass"],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Newton's Laws",
+              "description": "The three fundamental laws of motion",
+              "laws": [
+                "An object at rest stays at rest unless acted upon",
+                "F = ma",
+                "For every action there is an equal and opposite reaction"
+              ],
+              "difficulty": "beginner"
+            }
+          },
+          {
+            "content": {
+              "title": "Energy and Work",
+              "description": "Different forms of energy and how work is done",
+              "energyTypes": ["kinetic", "potential", "thermal", "electrical"],
+              "difficulty": "intermediate"
+            }
+          }
+        ]
+      },
+      {
+        "subject": {
+          "subjectName": "Waves and Sound"
+        },
+        "slides": [
+          {
+            "content": {
+              "title": "Wave Properties",
+              "description": "Understanding wave characteristics",
+              "properties": ["amplitude", "frequency", "wavelength", "speed"],
+              "difficulty": "intermediate"
+            }
+          },
+          {
+            "content": {
+              "title": "Sound Waves",
+              "description": "How sound travels and what we hear",
+              "characteristics": ["pitch", "loudness", "timbre"],
+              "difficulty": "intermediate"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "simpleReport1": {
+    "reportName": "Quick Reference Guide",
+    "reportDescription": "A simple reference document for common tasks",
+    "reportImage": "reference-image-004"
+  },
+  "simpleReport2": {
+    "reportName": "Project Overview",
+    "reportDescription": "High-level project summary and objectives",
+    "reportImage": "project-image-005"
+  }
+}
