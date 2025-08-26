@@ -5,7 +5,7 @@ export class SlideService {
   static async getAllSlides(): Promise<ISlide[]> {
     return await Slide.find()
       .select('-__v')
-      .sort({ index: 1, createdAt: -1 });
+      .sort({ position: 1, createdAt: -1 });
   }
 
   // Get slide by ID
@@ -18,8 +18,7 @@ export class SlideService {
   static async createSlide(slideData: Partial<ISlide>): Promise<ISlide> {
     const slide = new Slide({
       content: slideData.content,
-      inSubject: slideData.inSubject,
-      index: slideData.index
+      inTopic: slideData.inTopic,
     });
 
     return await slide.save();
@@ -40,11 +39,11 @@ export class SlideService {
     return await Slide.findByIdAndDelete(id);
   }
 
-  // Get slides by subject
-  static async getSlidesBySubject(subjectId: string): Promise<ISlide[]> {
-    return await Slide.find({ inSubject: subjectId })
+  // Get slides by topic
+  static async getSlidesByTopic(topicId: string): Promise<ISlide[]> {
+    return await Slide.find({ inTopic: topicId })
       .select('-__v')
-      .sort({ index: 1 });
+      .sort({ position: 1 });
   }
 }
 

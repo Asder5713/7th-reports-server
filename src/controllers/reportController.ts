@@ -49,7 +49,7 @@ export class ReportController {
   // POST create new report
   static async createReport(req: Request, res: Response): Promise<void> {
     try {
-      const { reportName, reportDescription, reportImage, index } = req.body;
+      const { reportName, reportDescription, reportImage, position } = req.body;
 
       // Validate required fields
       if (!reportName) {
@@ -64,7 +64,7 @@ export class ReportController {
         reportName, 
         reportDescription, 
         reportImage,
-        index
+        position
       });
       
       res.status(201).json({
@@ -83,13 +83,13 @@ export class ReportController {
   // PUT update report
   static async updateReport(req: Request, res: Response): Promise<void> {
     try {
-      const { reportName, reportDescription, reportImage, index } = req.body;
+      const { reportName, reportDescription, reportImage, position } = req.body;
       const updateData: Partial<IReport> = {};
 
       if (reportName) updateData.reportName = reportName;
       if (reportDescription !== undefined) updateData.reportDescription = reportDescription;
       if (reportImage) updateData.reportImage = reportImage;
-      if (index !== undefined) updateData.index = index;
+      if (position !== undefined) updateData.position = position;
 
       const report = await ReportService.updateReport(req.params.id, updateData);
       if (!report) {
@@ -140,10 +140,10 @@ export class ReportController {
 
 
 
-  // POST create complete report with subjects and slides
+  // POST create complete report with topics and slides
   static async createCompleteReport(req: Request, res: Response): Promise<void> {
     try {
-      const { report, subjects } = req.body;
+      const { report, topics } = req.body;
 
       // Validate required fields
       if (!report || !report.reportName) {
@@ -154,17 +154,17 @@ export class ReportController {
         return;
       }
 
-      if (!subjects || !Array.isArray(subjects) || subjects.length === 0) {
+      if (!topics || !Array.isArray(topics) || topics.length === 0) {
         res.status(400).json({
           success: false,
-          error: 'Subjects array is required and must not be empty'
+          error: 'Topics array is required and must not be empty'
         });
         return;
       }
 
-      // Validate each subject has required fields
-      for (const subjectData of subjects) {
-        if (!subjectData.subject || !subjectData.subject.subjectName) {
+      // Validate each topic has required fields
+      for (const topicData of topics) {
+        if (!topicData.topic || !topicData.topic.topicName) {
           res.status(400).json({
             success: false,
             error: 'Each subject must have a subjectName'
