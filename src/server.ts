@@ -8,7 +8,7 @@ import { authenticateRequest } from './middleware/auth';
 
 // Import routes
 import usersRouter from './routes/users';
-import subjectsRouter from './routes/subjects';
+import topicsRouter from './routes/topics';
 import slidesRouter from './routes/slides';
 import reportsRouter from './routes/reports';
 import filesRouter from './routes/files';
@@ -42,13 +42,13 @@ app.get('/', (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     status: 'running',
     version: '1.0.0',
-    endpoints: {
-      users: '/api/users',
-      subjects: '/api/subjects',
-      slides: '/api/slides',
-      reports: '/api/reports',
-      files: '/api/files'
-    }
+          endpoints: {
+        users: '/api/users',
+        topics: '/api/topics',
+        slides: '/api/slides',
+        reports: '/api/reports',
+        files: '/api/files'
+      }
   });
 });
 
@@ -63,7 +63,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // API Routes - all protected with authentication
 app.use('/api/users', authenticateRequest, usersRouter);
-app.use('/api/subjects', authenticateRequest, subjectsRouter);
+app.use('/api/topics', authenticateRequest, topicsRouter);
 app.use('/api/slides', authenticateRequest, slidesRouter);
 app.use('/api/reports', authenticateRequest, reportsRouter);
 app.use('/api/files', authenticateRequest, filesRouter);
@@ -94,7 +94,7 @@ app.listen(PORT, () => {
   console.log(`🌐 API available at http://localhost:${PORT}`);
   console.log(`📚 API Documentation:`);
   console.log(`   - Users: http://localhost:${PORT}/api/users`);
-  console.log(`   - Subjects: http://localhost:${PORT}/api/subjects`);
+  console.log(`   - Topics: http://localhost:${PORT}/api/topics`);
   console.log(`   - Slides: http://localhost:${PORT}/api/slides`);
   console.log(`   - Reports: http://localhost:${PORT}/api/reports`);
   console.log(`   - Files: http://localhost:${PORT}/api/files`);
