@@ -32,7 +32,7 @@ export class ReportController {
         });
         return;
       }
-      
+
       res.json({
         success: true,
         data: report
@@ -60,13 +60,13 @@ export class ReportController {
         return;
       }
 
-      const report = await ReportService.createReport({ 
-        reportName, 
-        reportDescription, 
+      const report = await ReportService.createReport({
+        reportName,
+        reportDescription,
         reportImage,
         position
       });
-      
+
       res.status(201).json({
         success: true,
         data: report
@@ -173,8 +173,8 @@ export class ReportController {
         }
       }
 
-      const completeReport = await ReportService.createCompleteReport({ report, subjects });
-      
+      const completeReport = await ReportService.createCompleteReport({ report, topics });
+
       res.status(201).json({
         success: true,
         data: completeReport,
@@ -184,6 +184,32 @@ export class ReportController {
       res.status(500).json({
         success: false,
         error: 'Failed to create complete report',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  static async getInitialReportData(req: Request, res: Response): Promise<void> {
+    try {
+
+      const reportData = await ReportService.getInitialReportData(req.params.id);
+
+      if (!reportData) {
+        res.status(404).json({
+          success: false,
+          error: 'Report not found'
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        data: reportData
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get initial report data',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

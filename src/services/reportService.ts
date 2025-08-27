@@ -91,8 +91,41 @@ export class ReportService {
     return savedReport;
   }
 
-  static async getInitialReportData(id: string): Promise<any> {
-    
+  static async getInitialReportData(id: string): Promise<{
+    topics: ITopic[];
+    slides: ISlide[][];
+  } | null> {
+    try {
+      // Query 1: Get all topics for the report using existing service method
+      const topics = await TopicService.getTopicsByReport(id);
+
+      if (topics.length === 0) {
+        return null;
+      }
+
+      const topicIds = topics.map(topic => topic._id);
+
+      // Use aggregation with $facet to apply different limits per topic efficiently
+      const slidesResult = await SlideService.getSlidesForInitialFetch(topicIds);
+
+      // Create a map for quick lookup
+      const slidesMap = new Map();
+      slidesResult.forEach((item: any) => {
+        slidesMap.set(item.topicId.toString(), item.slides);
+      });
+
+      // Build the final slides array maintaining topic order
+      const slides = topics.map(topic =>
+        slidesMap.get(topic._id.toString()) || []
+      );
+
+      return {
+        topics,
+        slides
+      };
+    } catch (error) {
+      throw new Error(`Failed to get initial report data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 }
 

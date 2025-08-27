@@ -45,5 +45,60 @@ export class SlideService {
       .select('-__v')
       .sort({ position: 1 });
   }
+
+  static async getSlidesForInitialFetch(topicIds: string[]) {
+    const slidesResult = await Slide.aggregate([
+      {
+        $facet: {
+          firstTopic: [
+            {
+              $match: { inTopic: topicIds[0] }
+            },
+            {
+              $sort: { position: 1 }
+            },
+            {
+              $limit: parseInt(process.env.FIRST_TOPIC_SLIDE_LIMIT || '15')
+            }
+          ],
+          otherTopics: [
+            {
+              $match: { inTopic: { $ne: topicIds[0] } }
+            },
+            {
+              $sort: { position: 1 }
+            },
+            {
+              $limit: parseInt(process.env.OTHER_TOPICS_SLIDE_LIMIT || '4')
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          allResults: {
+            $concatArrays: ['$firstTopic', '$otherTopics']
+          }
+        }
+      },
+      {
+        $unwind: '$allResults'
+      },
+      {
+        $group: {
+          _id: '$allResults.inTopic',
+          slides: { $push: '$allResults' }
+        }
+      },
+      {
+        $project: {
+          topicId: '$_id',
+          slides: 1
+        }
+      }
+    ]);
+
+    return slidesResult;
+  }
 }
 

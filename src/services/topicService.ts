@@ -48,7 +48,8 @@ export class TopicService {
   static async getTopicsByReport(reportId: string): Promise<ITopic[]> {
     return await Topic.find({ inReport: reportId })
       .select('-__v')
-      .sort({ position: 1 });
+      .sort({ position: 1 })
+      .lean();
   }
 
   // Get slides for a specific topic
