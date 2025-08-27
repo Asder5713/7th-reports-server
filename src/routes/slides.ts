@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { FilterQuery, Types } from 'mongoose';
 import Slide, { ISlide } from '../models/Slide';
+import { buildFilter, buildSort, checkForMoreSlides } from '../bl/slides.bl';
 
 const router = express.Router();
 
@@ -143,78 +144,26 @@ router.get("/v1/topics/:topicId/slides", async (req: Request<{
   topicId: string, limit: number, cursorPos: any, cursorId: string, dir: 'next' | 'prev'
 }>, res: Response) => {
   const { topicId, limit, cursorPos, cursorId, dir } = req.params;
-  let filter: FilterQuery<ISlide> = { topicId };
-  if (cursorPos != null && cursorId) {
-    if (dir === "next") {
-      filter = {
-        topicId,
-        $or: [
-          { position: { $gt: cursorPos } },
-          { position: cursorPos, _id: { $gt: cursorId } },
-        ],
-      };
-    } else {
-      filter = {
-        topicId,
-        $or: [
-          { position: { $lt: cursorPos } },
-          { position: cursorPos, _id: { $lt: cursorId } },
-        ],
-      };
-    }
-  }
 
-
-  const sort: Record<string, 1 | -1> = dir === "next" ? { position: 1, _id: 1 } : { position: -1, _id: -1 };
+  const filter = buildFilter(topicId, cursorPos, cursorId, dir);
+  const sort = buildSort(dir);
 
   // Fetch items + peek one extra to compute hasMore reliably
   const queryLimit = limit + 1;
   let docs = await Slide.find(filter).sort(sort).limit(queryLimit).lean();
 
-
   const hasMoreInDir = docs.length > limit;
   if (hasMoreInDir) docs = docs.slice(0, limit);
-
 
   // Always return ASC order for UI simplicity
   const items = dir === "prev" ? docs.reverse() : docs;
 
-
   const first = items[0];
   const last = items[items.length - 1];
 
-
   // Compute prev/next existence more accurately by peeking around anchors
-  // If current direction was next, we still need to know if prev exists at the top edge
-  let hasMorePrev = false;
-  let hasMoreNext = false;
-
-
-  if (first) {
-    // Check if anything exists before first
-    const prevFilter = {
-      topicId,
-      $or: [
-        { position: { $lt: first.position } },
-        { position: first.position, _id: { $lt: first._id } },
-      ],
-    };
-    hasMorePrev = (await Slide.find(prevFilter).sort({ position: -1, _id: -1 }).limit(1).lean()).length > 0;
-  }
-
-
-  if (last) {
-    // Check if anything exists after last
-    const nextFilter = {
-      topicId,
-      $or: [
-        { position: { $gt: last.position } },
-        { position: last.position, _id: { $gt: last._id } },
-      ],
-    };
-    hasMoreNext = (await Slide.find(nextFilter).sort({ position: 1, _id: 1 }).limit(1).lean()).length > 0;
-  }
-
+  const hasMorePrev = first ? await checkForMoreSlides(topicId, first.position, first._id, dir) : false;
+  const hasMoreNext = last ? await checkForMoreSlides(topicId, last.position, last._id, dir) : false;
 
   res.json({
     items,
@@ -224,6 +173,7 @@ router.get("/v1/topics/:topicId/slides", async (req: Request<{
     hasMorePrev,
   });
 });
+
 
 router.get("/:topicId/slides:last-cursor", async (req, res) => {
   try {
