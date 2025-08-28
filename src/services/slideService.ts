@@ -42,7 +42,7 @@ export class SlideService {
   // Get slides by topic
   static async getSlidesByTopic(topicId: string, limit?: number, skip?: number): Promise<ISlide[]> {
     const query = Slide.find({ inTopic: topicId })
-      .select('-__v')
+      .select('_id content')
       .sort({ position: 1 });
     
     if (skip) {
@@ -97,7 +97,7 @@ export class SlideService {
       {
         $group: {
           _id: '$allResults.inTopic',
-          slides: { $push: '$allResults' }
+          slides: { $push: { _id: '$allResults._id', content: '$allResults.content' } }
         }
       },
       {

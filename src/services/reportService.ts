@@ -10,15 +10,15 @@ export class ReportService {
   static async getAllReports(): Promise<IReport[]> {
     return await Report.find()
       .populate('reportImage')
-      .select('-__v')
-      .sort({ position: 1, createdAt: -1 });
+      .select('_id reportName reportDescription reportImage')
+      .sort({ position: 1 });
   }
 
   // Get report by ID
   static async getReportById(id: string): Promise<IReport | null> {
     return await Report.findById(id)
       .populate('reportImage')
-      .select('-__v');
+      .select('_id reportName reportDescription reportImage');
   }
 
   // Create new report
@@ -33,7 +33,7 @@ export class ReportService {
     const savedReport = await report.save();
     const populatedReport = await Report.findById(savedReport._id)
       .populate('reportImage')
-      .select('-__v');
+      .select('_id reportName reportDescription reportImage');
 
     return populatedReport!;
   }
@@ -46,7 +46,7 @@ export class ReportService {
       { new: true, runValidators: true }
     )
       .populate('reportImage')
-      .select('-__v');
+      .select('_id reportName reportDescription reportImage');
   }
 
   // Delete report

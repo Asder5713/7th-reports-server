@@ -47,7 +47,7 @@ export class TopicService {
   // Get topics by report
   static async getTopicsByReport(reportId: string): Promise<ITopic[]> {
     return await Topic.find({ inReport: reportId })
-      .select('-__v')
+      .select('topicName _id')
       .sort({ position: 1 })
       .lean();
   }
