@@ -21,4 +21,6 @@ router.delete('/:id', topicController.deleteTopic);
 // GET topics by report
 router.get('/report/:reportId', topicController.getTopicsByReport);
 
+router.get('/:id/slides', topicController.getSlidesForTopic);
+
 export default router; 

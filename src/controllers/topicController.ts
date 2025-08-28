@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { TopicService } from '../services/topicService';
 import { ITopic } from '../models/Topic';
+import { SlideService } from '../services/slideService';
 
 export class topicController {
   // GET all topics
@@ -146,6 +147,37 @@ export class topicController {
       res.status(500).json({
         success: false,
         error: 'Failed to fetch topics by report',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  static async getSlidesForTopic(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { limit, skip } = req.query;
+      
+      const limitNum = limit ? parseInt(limit as string) : undefined;
+      const skipNum = skip ? parseInt(skip as string) : undefined;
+      
+      const slides = await SlideService.getSlidesByTopic(id, limitNum, skipNum);
+
+      if (slides.length === 0) {
+        res.status(404).json({
+          success: false,
+          error: 'No slides found for topic'
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        data: slides
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch slides for topic',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

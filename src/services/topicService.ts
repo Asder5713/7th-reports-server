@@ -53,8 +53,8 @@ export class TopicService {
   }
 
   // Get slides for a specific topic
-  static async getSlidesForTopic(topicId: string): Promise<any[]> {
-    return await SlideService.getSlidesByTopic(topicId);
+  static async getSlidesForTopic(topicId: string, limit?: number, skip?: number): Promise<any[]> {
+    return await SlideService.getSlidesByTopic(topicId, limit, skip);
   }
 }
 

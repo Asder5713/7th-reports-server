@@ -40,10 +40,20 @@ export class SlideService {
   }
 
   // Get slides by topic
-  static async getSlidesByTopic(topicId: string): Promise<ISlide[]> {
-    return await Slide.find({ inTopic: topicId })
+  static async getSlidesByTopic(topicId: string, limit?: number, skip?: number): Promise<ISlide[]> {
+    const query = Slide.find({ inTopic: topicId })
       .select('-__v')
       .sort({ position: 1 });
+    
+    if (skip) {
+      query.skip(skip);
+    }
+    
+    if (limit) {
+      query.limit(limit);
+    }
+    
+    return await query;
   }
 
   static async getSlidesForInitialFetch(topicIds: string[]) {

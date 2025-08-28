@@ -130,25 +130,5 @@ export class SlideController {
       });
     }
   }
-
-  // GET slides by topic
-  static async getSlidesByTopic(req: Request, res: Response): Promise<void> {
-    try {
-      const { topicId } = req.params;
-      const slides = await SlideService.getSlidesByTopic(topicId);
-      
-      res.json({
-        success: true,
-        data: slides,
-        count: slides.length
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Failed to fetch slides by topic',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  }
 }
 
