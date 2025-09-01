@@ -49,18 +49,18 @@ export class SlideController {
   // POST create new slide
   static async createSlide(req: Request, res: Response): Promise<void> {
     try {
-      const { content, inSubject, index } = req.body;
+      const { content, inTopic } = req.body;
 
       // Validate required fields
-      if (!content || !inSubject) {
+      if (!content || !inTopic) {
         res.status(400).json({
           success: false,
-          error: 'Content and inSubject are required'
+          error: 'Content and inTopic are required'
         });
         return;
       }
 
-      const slide = await SlideService.createSlide({ content, inSubject, index });
+      const slide = await SlideService.createSlide({ content, inTopic });
       res.status(201).json({
         success: true,
         data: slide
@@ -77,12 +77,12 @@ export class SlideController {
   // PUT update slide
   static async updateSlide(req: Request, res: Response): Promise<void> {
     try {
-      const { content, inSubject, index } = req.body;
+      const { content, inTopic, position } = req.body;
       const updateData: Partial<ISlide> = {};
 
       if (content) updateData.content = content;
-      if (inSubject) updateData.inSubject = inSubject;
-      if (index !== undefined) updateData.index = index;
+      if (inTopic) updateData.inTopic = inTopic;
+      if (position !== undefined) updateData.position = position;
 
       const slide = await SlideService.updateSlide(req.params.id, updateData);
       if (!slide) {
@@ -131,11 +131,11 @@ export class SlideController {
     }
   }
 
-  // GET slides by subject
-  static async getSlidesBySubject(req: Request, res: Response): Promise<void> {
+  // GET slides by topic
+  static async getSlidesByTopic(req: Request, res: Response): Promise<void> {
     try {
-      const { subjectId } = req.params;
-      const slides = await SlideService.getSlidesBySubject(subjectId);
+      const { topicId } = req.params;
+      const slides = await SlideService.getSlidesByTopic(topicId);
       
       res.json({
         success: true,
@@ -145,7 +145,7 @@ export class SlideController {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch slides by subject',
+        error: 'Failed to fetch slides by topic',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

@@ -3,8 +3,8 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface ISlide extends Document {
   _id: string;
   content: any; // Object type for flexible content
-  inSubject: mongoose.Types.ObjectId;
-  index?: number;
+  inTopic: mongoose.Types.ObjectId;
+  position?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,33 +14,33 @@ const SlideSchema = new Schema<ISlide>({
     type: Schema.Types.Mixed,
     required: true
   },
-  inSubject: {
+  inTopic: {
     type: Schema.Types.ObjectId,
-    ref: 'Subject'
+    ref: 'Topic'
   },
-  index: {
+  position: {
     type: Number
   }
 }, {
   timestamps: true
 });
 
-// Add compound index to ensure unique index per subject
-SlideSchema.index({ inSubject: 1, index: 1 }, { unique: true });
+// Add compound index to ensure unique position per topic
+SlideSchema.index({ inTopic: 1, position: 1 }, { unique: true });
 
-// Pre-save middleware to auto-increment index
+// Pre-save middleware to auto-increment position
 SlideSchema.pre('save', async function(next) {
-  // Only run this middleware if the document is new or inSubject has changed
-  if (this.isNew || this.isModified('inSubject')) {
-    if (this.inSubject) {
-      // Find the highest index for slides in the same subject
+  // Only run this middleware if the document is new or inTopic has changed
+  if (this.isNew || this.isModified('inTopic')) {
+    if (this.inTopic) {
+      // Find the highest position for slides in the same topic
       const highestSlide = await Slide.findOne(
-        { inSubject: this.inSubject },
-        { index: 1 }
-      ).sort({ index: -1 });
+        { inTopic: this.inTopic },
+        { position: 1 }
+      ).sort({ position: -1 });
       
-      // Set index to 0 if no slides exist, otherwise increment
-      this.index = highestSlide ? highestSlide.index! + 1 : 0;
+      // Set position to 0 if no slides exist, otherwise increment
+      this.position = highestSlide ? highestSlide.position! + 1 : 0;
     }
   }
   next();

@@ -5,7 +5,7 @@ export interface IReport extends Document {
   reportName: string;
   reportDescription: string;
   reportImage: mongoose.Types.ObjectId;
-  index?: number;
+  position?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,7 +24,7 @@ const ReportSchema = new Schema<IReport>({
     type: Schema.Types.ObjectId,
     ref: 'File'
   },
-  index: {
+  position: {
     type: Number
   }
 }, {

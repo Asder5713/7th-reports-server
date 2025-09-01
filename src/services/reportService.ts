@@ -1,7 +1,7 @@
 import Report, { IReport } from '../models/Report';
-import { SubjectService } from './subjectService';
+import { TopicService } from './topicService';
 import { SlideService } from './slideService';
-import { ISubject } from '../models/Subject';
+import { ITopic } from '../models/Topic';
 import { ISlide } from '../models/Slide';
 import mongoose from 'mongoose';
 
@@ -11,7 +11,7 @@ export class ReportService {
     return await Report.find()
       .populate('reportImage')
       .select('-__v')
-      .sort({ index: 1, createdAt: -1 });
+      .sort({ position: 1, createdAt: -1 });
   }
 
   // Get report by ID
@@ -27,7 +27,7 @@ export class ReportService {
       reportName: reportData.reportName,
       reportDescription: reportData.reportDescription,
       reportImage: reportData.reportImage,
-      index: reportData.index
+      position: reportData.position
     });
 
     const savedReport = await report.save();
@@ -55,16 +55,16 @@ export class ReportService {
   }
 
 
-  // Get subjects for a specific report
-  static async getSubjectsForReport(reportId: string): Promise<any[]> {
-    return await SubjectService.getSubjectsByReport(reportId);
+  // Get topics for a specific report
+  static async getTopicsForReport(reportId: string): Promise<any[]> {
+    return await TopicService.getTopicsByReport(reportId);
   }
 
-  // Create complete report with subjects and slides
+  // Create complete report with topics and slides
   static async createCompleteReport(reportData: {
     report: Partial<IReport>;
-    subjects: Array<{
-      subject: Partial<ISubject>;
+    topics: Array<{
+      topic: Partial<ITopic>;
       slides: Partial<ISlide>[];
     }>;
   }): Promise<IReport> {
@@ -72,23 +72,27 @@ export class ReportService {
     const report = new Report(reportData.report);
     const savedReport = await report.save();
 
-    // Create subjects and slides using their respective services
-    for (const subjectData of reportData.subjects) {
-      const savedSubject = await SubjectService.createSubject({
-        ...subjectData.subject,
+    // Create topics and slides using their respective services
+    for (const topicData of reportData.topics) {
+      const savedTopic = await TopicService.createTopic({
+        ...topicData.topic,
         inReport: new mongoose.Types.ObjectId(savedReport._id),
       });
 
-      // Create slides for this subject
-      for (const slideData of subjectData.slides) {
+      // Create slides for this topic
+      for (const slideData of topicData.slides) {
         await SlideService.createSlide({
           ...slideData,
-          inSubject: new mongoose.Types.ObjectId(savedSubject._id),
+          inTopic: new mongoose.Types.ObjectId(savedTopic._id),
         });
       }
     }
 
     return savedReport;
+  }
+
+  static async getInitialReportData(id: string): Promise<any> {
+    
   }
 }
 
