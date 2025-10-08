@@ -119,6 +119,8 @@ export class ReportService {
         slidesMap.get(topic._id.toString()) || []
       );
 
+      await Promise.all(slides.map(slide => slide.resolveFiles()));
+
       return {
         topics,
         slides

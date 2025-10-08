@@ -11,6 +11,7 @@ export interface ISlide extends Document {
   position?: number;
   createdAt: Date;
   updatedAt: Date;
+  resolveFiles: () => Promise<void>;
 }
 
 const SlideSchema = new Schema<ISlide>({
@@ -57,7 +58,9 @@ SlideSchema.methods.resolveFiles = async function () {
     const value = this.content[key];
 
     if (
+      // Either an objectID
       Types.ObjectId.isValid(value) || 
+      // Or already populated
       (typeof value === "object" && value?.fileKey && value?._id)
     ) {
       const fileDoc = typeof value === "object" ? value : await File.findById(value);
