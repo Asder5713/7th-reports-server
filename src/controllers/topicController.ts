@@ -170,6 +170,8 @@ export class topicController {
         return;
       }
 
+      await Promise.all(slides.map(slide => slide.resolveFiles()));
+
       res.json({
         success: true,
         data: slides

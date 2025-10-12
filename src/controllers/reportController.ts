@@ -138,8 +138,6 @@ export class ReportController {
     }
   }
 
-
-
   // POST create complete report with topics and slides
   static async createCompleteReport(req: Request, res: Response): Promise<void> {
     try {

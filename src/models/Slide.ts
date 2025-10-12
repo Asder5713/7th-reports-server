@@ -1,4 +1,8 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import File from './File';
+import { s3 } from '../config/s3';
 
 export interface ISlide extends Document {
   _id: string;
@@ -7,6 +11,7 @@ export interface ISlide extends Document {
   position?: number;
   createdAt: Date;
   updatedAt: Date;
+  resolveFiles: () => Promise<void>;
 }
 
 const SlideSchema = new Schema<ISlide>({
@@ -34,7 +39,7 @@ SlideSchema.pre('save', async function(next) {
   if (this.isNew || this.isModified('inTopic')) {
     if (this.inTopic) {
       // Find the highest position for slides in the same topic
-      const highestSlide = await Slide.findOne(
+      const highestSlide = await (this.constructor as any).findOne(
         { inTopic: this.inTopic },
         { position: 1 }
       ).sort({ position: -1 });
@@ -46,7 +51,36 @@ SlideSchema.pre('save', async function(next) {
   next();
 });
 
+SlideSchema.methods.resolveFiles = async function () {
+  const S3_BUCKET = process.env.S3_BUCKET!;
+  
+  for (const key of Object.keys(this.content)) {
+    const value = this.content[key];
 
+    if (
+      // Either an objectID
+      Types.ObjectId.isValid(value) || 
+      // Or already populated
+      (typeof value === "object" && value?.fileKey && value?._id)
+    ) {
+      const fileDoc = typeof value === "object" ? value : await File.findById(value);
+      if (!fileDoc) continue;
+
+      const command = new GetObjectCommand({
+        Bucket: S3_BUCKET,
+        Key: fileDoc.fileKey,
+      });
+
+      const url = await getSignedUrl(s3, command, { expiresIn: +process.env.SIGNED_URL_EXPIRATION_TIME! });
+
+      this.content[key] = {
+        _id: fileDoc._id,
+        mimeType: fileDoc.mimeType,
+        url,
+      };
+    }
+  }
+};
 
 const Slide = mongoose.model<ISlide>('Slide', SlideSchema);
 
