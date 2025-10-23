@@ -44,6 +44,8 @@ npm install
 MONGODB_URI=mongodb://localhost:27017/7th-reports
 PORT=3000
 API_SECRET_KEY=your-secret-key-here
+FIRST_TOPIC_SLIDE_LIMIT=15
+OTHER_TOPICS_SLIDE_LIMIT=4
 ```
 
 4. Start the development server:
@@ -123,26 +125,23 @@ http://localhost:3000/api
 }
 ```
 
-### Subjects (`/subjects`)
+### Topics (`/topics`)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/subjects` | Get all active subjects |
-| GET | `/subjects/:id` | Get subject by ID |
-| GET | `/subjects/teacher/:teacherId` | Get subjects by teacher |
-| POST | `/subjects` | Create new subject |
-| PUT | `/subjects/:id` | Update subject |
-| DELETE | `/subjects/:id` | Deactivate subject |
+| GET | `/topics` | Get all active topics |
+| GET | `/topics/:id` | Get topic by ID |
+| GET | `/topics/report/:reportId` | Get topics by report |
+| POST | `/topics` | Create new topic |
+| PUT | `/topics/:id` | Update topic |
+| DELETE | `/topics/:id` | Delete topic |
 
-**Subject Model:**
+**Topic Model:**
 ```typescript
 {
-  name: string;
-  code: string;
-  description?: string;
-  grade: string;
-  teacherId: ObjectId;
-  isActive: boolean;
+  topicName: string;
+  inReport: ObjectId;
+  position?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -154,7 +153,7 @@ http://localhost:3000/api
 |--------|----------|-------------|
 | GET | `/slides` | Get all active slides |
 | GET | `/slides/:id` | Get slide by ID |
-| GET | `/slides/subject/:subjectId` | Get slides by subject |
+| GET | `/slides/topic/:topicId` | Get slides by topic |
 | POST | `/slides` | Create new slide |
 | PUT | `/slides/:id` | Update slide |
 | DELETE | `/slides/:id` | Deactivate slide |
@@ -162,12 +161,9 @@ http://localhost:3000/api
 **Slide Model:**
 ```typescript
 {
-  title: string;
-  content: string;
-  slideNumber: number;
-  subjectId: ObjectId;
-  createdBy: ObjectId;
-  isActive: boolean;
+  content: any; // Flexible content object
+  inTopic: ObjectId;
+  position?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -262,7 +258,7 @@ http://localhost:3000/api
 The application uses MongoDB with the following collections:
 
 1. **users** - User accounts and roles
-2. **subjects** - Academic subjects and courses
+2. **topics** - Academic topics and courses
 3. **slides** - Learning materials and presentations
 4. **cognitiveanswers** - Student assessment responses
 5. **reports** - Generated reports and analytics
@@ -284,13 +280,13 @@ src/
 │   └── database.ts          # Database configuration
 ├── models/
 │   ├── User.ts             # User model
-│   ├── Subject.ts          # Subject model
+│   ├── Topic.ts            # Topic model
 │   ├── Slide.ts            # Slide model
 │   ├── CognitiveAnswers.ts # Cognitive answers model
 │   └── Report.ts           # Report model
 ├── routes/
 │   ├── users.ts            # User routes
-│   ├── subjects.ts         # Subject routes
+│   ├── topics.ts           # Topic routes
 │   ├── slides.ts           # Slide routes
 │   ├── cognitive-answers.ts # Cognitive answers routes
 │   └── reports.ts          # Report routes
@@ -303,6 +299,9 @@ src/
 |----------|---------|-------------|
 | `PORT` | `3000` | Server port |
 | `MONGODB_URI` | `mongodb://localhost:27017/7th-reports` | MongoDB connection string |
+| `API_SECRET_KEY` | `your-secret-key-here` | Secret key for API authentication |
+| `FIRST_TOPIC_SLIDE_LIMIT` | `15` | Number of slides to fetch for the first topic |
+| `OTHER_TOPICS_SLIDE_LIMIT` | `4` | Number of slides to fetch for all other topics |
 
 ## API Examples
 
@@ -318,16 +317,13 @@ curl -X POST http://localhost:3000/api/users \
   }'
 ```
 
-### Create a Subject
+### Create a Topic
 ```bash
-curl -X POST http://localhost:3000/api/subjects \
+curl -X POST http://localhost:3000/api/topics \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Mathematics",
-    "code": "MATH101",
-    "description": "Introduction to Mathematics",
-    "grade": "10th Grade",
-    "teacherId": "teacher_id_here"
+    "topicName": "Mathematics",
+    "inReport": "report_id_here"
   }'
 ```
 
@@ -337,7 +333,7 @@ curl -X POST http://localhost:3000/api/reports/generate \
   -H "Content-Type: application/json" \
   -d '{
     "userId": "user_id_here",
-    "subjectId": "subject_id_here",
+    "topicId": "topic_id_here",
     "title": "Math Assessment Report",
     "description": "Comprehensive report for mathematics assessment",
     "startDate": "2024-01-01",

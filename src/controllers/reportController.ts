@@ -165,14 +165,14 @@ export class ReportController {
         if (!topicData.topic || !topicData.topic.topicName) {
           res.status(400).json({
             success: false,
-            error: 'Each subject must have a subjectName'
+            error: 'Each topic must have a topicName'
           });
           return;
         }
       }
 
       const completeReport = await ReportService.createCompleteReport({ report, topics });
-
+      
       res.status(201).json({
         success: true,
         data: completeReport,

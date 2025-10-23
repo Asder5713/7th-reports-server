@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITopic extends Document {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   topicName: string;
   inReport: mongoose.Types.ObjectId;
   position?: number;
