@@ -50,10 +50,10 @@ export class topicController {
   // POST create new topic
   static async createTopic(req: Request, res: Response): Promise<void> {
     try {
-      const { topicName, inReport } = req.body;
+      const { name, inReport } = req.body;
 
       // Validate required fields
-      if (!topicName || !inReport) {
+      if (!name || !inReport) {
         res.status(400).json({
           success: false,
           error: 'Topic name and inReport are required'
@@ -61,7 +61,7 @@ export class topicController {
         return;
       }
 
-      const topic = await TopicService.createTopic({ topicName, inReport });
+      const topic = await TopicService.createTopic({ name, inReport });
       res.status(201).json({
         success: true,
         data: topic
@@ -78,10 +78,10 @@ export class topicController {
   // PUT update topic
   static async updateTopic(req: Request, res: Response): Promise<void> {
     try {
-      const { topicName, inReport, position } = req.body;
+      const { name, inReport, position } = req.body;
       const updateData: Partial<ITopic> = {};
 
-      if (topicName) updateData.topicName = topicName;
+      if (name) updateData.name = name;
       if (inReport) updateData.inReport = inReport;
       if (position !== undefined) updateData.position = position;
 

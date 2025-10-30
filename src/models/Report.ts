@@ -2,25 +2,31 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IReport extends Document {
   _id: string;
-  reportName: string;
-  reportDescription: string;
-  reportImage: mongoose.Types.ObjectId;
+  name: string;
+  description: string;
+  image?: mongoose.Types.ObjectId;
+  unit: string;
   position?: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const ReportSchema = new Schema<IReport>({
-  reportName: {
+  name: {
     type: String,
     required: true,
     trim: true
   },
-  reportDescription: {
+  description: {
     type: String,
+    required: true,
     trim: true
   },
-  reportImage: {
+  unit: {
+    type: String,
+    required: true
+  },
+  image: {
     type: Schema.Types.ObjectId,
     ref: 'File'
   },

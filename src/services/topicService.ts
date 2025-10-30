@@ -18,7 +18,7 @@ export class TopicService {
   // Create new topic
   static async createTopic(topicData: Partial<ITopic>): Promise<ITopic> {
     const topic = new Topic({
-      topicName: topicData.topicName,
+      name: topicData.name,
       inReport: topicData.inReport
     });
 
@@ -47,7 +47,7 @@ export class TopicService {
   // Get topics by report
   static async getTopicsByReport(reportId: string): Promise<ITopic[]> {
     return await Topic.find({ inReport: reportId })
-      .select('topicName _id')
+      .select('name _id')
       .sort({ position: 1 })
       .lean();
   }

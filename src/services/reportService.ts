@@ -9,16 +9,16 @@ export class ReportService {
   // Get all reports
   static async getAllReports(): Promise<IReport[]> {
     return await Report.find()
-      .populate('reportImage')
-      .select('_id reportName reportDescription reportImage')
+      .populate('image')
+      .select('_id name description unit image')
       .sort({ position: 1 });
   }
 
   // Get report by ID
   static async getReportById(id: string): Promise<IReport | null> {
     return await Report.findById(id)
-      .populate('reportImage')
-      .select('_id reportName reportDescription reportImage');
+      .populate('image')
+      .select('_id name description unit image');
   }
 
   // Create new report
@@ -45,8 +45,8 @@ export class ReportService {
       updateData,
       { new: true, runValidators: true }
     )
-      .populate('reportImage')
-      .select('_id reportName reportDescription reportImage');
+      .populate('image')
+      .select('_id name description unit image');
   }
 
   // Delete report

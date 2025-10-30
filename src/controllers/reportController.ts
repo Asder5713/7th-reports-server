@@ -49,10 +49,10 @@ export class ReportController {
   // POST create new report
   static async createReport(req: Request, res: Response): Promise<void> {
     try {
-      const { reportName, reportDescription, reportImage, position } = req.body;
+      const { name, description, unit, position } = req.body;
 
       // Validate required fields
-      if (!reportName) {
+      if (!name) {
         res.status(400).json({
           success: false,
           error: 'Report name is required'
@@ -61,9 +61,9 @@ export class ReportController {
       }
 
       const report = await ReportService.createReport({
-        reportName,
-        reportDescription,
-        reportImage,
+        name,
+        description,
+        unit,
         position
       });
 
@@ -83,12 +83,12 @@ export class ReportController {
   // PUT update report
   static async updateReport(req: Request, res: Response): Promise<void> {
     try {
-      const { reportName, reportDescription, reportImage, position } = req.body;
+      const { name, description, unit, position } = req.body;
       const updateData: Partial<IReport> = {};
 
-      if (reportName) updateData.reportName = reportName;
-      if (reportDescription !== undefined) updateData.reportDescription = reportDescription;
-      if (reportImage) updateData.reportImage = reportImage;
+      if (name) updateData.name = name;
+      if (description !== undefined) updateData.description = description;
+      if (unit !== undefined) updateData.unit = unit;
       if (position !== undefined) updateData.position = position;
 
       const report = await ReportService.updateReport(req.params.id, updateData);
@@ -144,10 +144,10 @@ export class ReportController {
       const { report, topics } = req.body;
 
       // Validate required fields
-      if (!report || !report.reportName) {
+      if (!report || !report.name) {
         res.status(400).json({
           success: false,
-          error: 'Report data with reportName is required'
+          error: 'Report data with name is required'
         });
         return;
       }
@@ -162,10 +162,10 @@ export class ReportController {
 
       // Validate each topic has required fields
       for (const topicData of topics) {
-        if (!topicData.topic || !topicData.topic.topicName) {
+        if (!topicData.topic || !topicData.topic.name) {
           res.status(400).json({
             success: false,
-            error: 'Each topic must have a topicName'
+            error: 'Each topic must have a name'
           });
           return;
         }

@@ -139,7 +139,7 @@ http://localhost:3000/api
 **Topic Model:**
 ```typescript
 {
-  topicName: string;
+  name: string;
   inReport: ObjectId;
   position?: number;
   createdAt: Date;
@@ -322,7 +322,7 @@ curl -X POST http://localhost:3000/api/users \
 curl -X POST http://localhost:3000/api/topics \
   -H "Content-Type: application/json" \
   -d '{
-    "topicName": "Mathematics",
+    "name": "Mathematics",
     "inReport": "report_id_here"
   }'
 ```
