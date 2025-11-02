@@ -67,9 +67,9 @@ export class UserService {
   }
 
   // Check if user exists by army ID
-  static async userExistsByArmyId(armyId: string): Promise<boolean> {
+  static async getUserByArmyId(armyId: string): Promise<IUser | null> {
     const user = await User.findOne({ armyId });
-    return !!user;
+    return user;
   }
 }
 

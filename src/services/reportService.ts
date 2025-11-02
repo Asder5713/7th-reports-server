@@ -3,39 +3,31 @@ import { TopicService } from './topicService';
 import { SlideService } from './slideService';
 import { ITopic } from '../models/Topic';
 import { ISlide } from '../models/Slide';
-import mongoose from 'mongoose';
 
 export class ReportService {
   // Get all reports
   static async getAllReports(): Promise<IReport[]> {
-    return await Report.find()
-      .populate('reportImage')
-      .select('-__v')
-      .sort({ position: 1, createdAt: -1 });
+    const reports = await Report.find()
+      .select('_id name description unit image')
+      .sort({ position: 1 });
+    await Promise.all(reports.map(report => report?.resolveFiles()));
+    return reports;
   }
 
   // Get report by ID
   static async getReportById(id: string): Promise<IReport | null> {
-    return await Report.findById(id)
-      .populate('reportImage')
-      .select('-__v');
+    const report = await Report.findById(id)
+      .select('_id name description unit image');
+    await report?.resolveFiles();
+    return report;
   }
 
   // Create new report
   static async createReport(reportData: Partial<IReport>): Promise<IReport> {
-    const report = new Report({
-      reportName: reportData.reportName,
-      reportDescription: reportData.reportDescription,
-      reportImage: reportData.reportImage,
-      position: reportData.position
-    });
+    const report = new Report(reportData);
 
-    const savedReport = await report.save();
-    const populatedReport = await Report.findById(savedReport._id)
-      .populate('reportImage')
-      .select('-__v');
-
-    return populatedReport!;
+    await report.save();
+    return report;
   }
 
   // Update report
@@ -45,8 +37,7 @@ export class ReportService {
       updateData,
       { new: true, runValidators: true }
     )
-      .populate('reportImage')
-      .select('-__v');
+      .select('_id name description unit image');
   }
 
   // Delete report
@@ -76,14 +67,14 @@ export class ReportService {
     for (const topicData of reportData.topics) {
       const savedTopic = await TopicService.createTopic({
         ...topicData.topic,
-        inReport: new mongoose.Types.ObjectId(savedReport._id),
+        inReport: savedReport._id,
       });
 
       // Create slides for this topic
       for (const slideData of topicData.slides) {
         await SlideService.createSlide({
           ...slideData,
-          inTopic: new mongoose.Types.ObjectId(savedTopic._id),
+          inTopic: savedTopic._id,
         });
       }
     }
@@ -91,8 +82,40 @@ export class ReportService {
     return savedReport;
   }
 
-  static async getInitialReportData(id: string): Promise<any> {
-    
+  static async getInitialReportData(id: string): Promise<{
+    topics: ITopic[];
+    slides: ISlide[][];
+  } | null> {
+    try {
+      // Query 1: Get all topics for the report using existing service method
+      const topics = await TopicService.getTopicsByReport(id);
+
+      if (topics.length === 0) {
+        return null;
+      }
+
+      const topicIds = topics.map(topic => topic._id);
+
+      // Use aggregation with $facet to apply different limits per topic efficiently
+      const slidesResult = await SlideService.getSlidesForInitialFetch(topicIds);
+
+      // Create a map for quick lookup
+      const slidesMap = new Map();
+      slidesResult.forEach((item: any) => {
+        slidesMap.set(item.topicId.toString(), item.slides);
+      });
+
+      // Build the final slides array maintaining topic order
+      const slides = topics.map(topic =>
+        slidesMap.get(topic._id.toString()) || []
+      );
+      
+      return {
+        topics,
+        slides
+      };
+    } catch (error) {
+      throw new Error(`Failed to get initial report data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 }
-

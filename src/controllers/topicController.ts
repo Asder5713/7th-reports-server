@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { TopicService } from '../services/topicService';
 import { ITopic } from '../models/Topic';
+import { SlideService } from '../services/slideService';
 
 export class topicController {
   // GET all topics
@@ -49,10 +50,10 @@ export class topicController {
   // POST create new topic
   static async createTopic(req: Request, res: Response): Promise<void> {
     try {
-      const { topicName, inReport } = req.body;
+      const { name, inReport } = req.body;
 
       // Validate required fields
-      if (!topicName || !inReport) {
+      if (!name || !inReport) {
         res.status(400).json({
           success: false,
           error: 'Topic name and inReport are required'
@@ -60,7 +61,7 @@ export class topicController {
         return;
       }
 
-      const topic = await TopicService.createTopic({ topicName, inReport });
+      const topic = await TopicService.createTopic({ name, inReport });
       res.status(201).json({
         success: true,
         data: topic
@@ -77,10 +78,10 @@ export class topicController {
   // PUT update topic
   static async updateTopic(req: Request, res: Response): Promise<void> {
     try {
-      const { topicName, inReport, position } = req.body;
+      const { name, inReport, position } = req.body;
       const updateData: Partial<ITopic> = {};
 
-      if (topicName) updateData.topicName = topicName;
+      if (name) updateData.name = name;
       if (inReport) updateData.inReport = inReport;
       if (position !== undefined) updateData.position = position;
 
@@ -146,6 +147,37 @@ export class topicController {
       res.status(500).json({
         success: false,
         error: 'Failed to fetch topics by report',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  static async getSlidesForTopic(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { limit, skip } = req.query;
+      
+      const limitNum = limit ? parseInt(limit as string) : undefined;
+      const skipNum = skip ? parseInt(skip as string) : undefined;
+      
+      const slides = await SlideService.getSlidesByTopic(id, limitNum, skipNum);
+
+      if (slides.length === 0) {
+        res.status(404).json({
+          success: false,
+          error: 'No slides found for topic'
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        data: slides
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch slides for topic',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

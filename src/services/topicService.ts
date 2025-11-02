@@ -18,7 +18,7 @@ export class TopicService {
   // Create new topic
   static async createTopic(topicData: Partial<ITopic>): Promise<ITopic> {
     const topic = new Topic({
-      topicName: topicData.topicName,
+      name: topicData.name,
       inReport: topicData.inReport
     });
 
@@ -47,13 +47,14 @@ export class TopicService {
   // Get topics by report
   static async getTopicsByReport(reportId: string): Promise<ITopic[]> {
     return await Topic.find({ inReport: reportId })
-      .select('-__v')
-      .sort({ position: 1 });
+      .select('name _id')
+      .sort({ position: 1 })
+      .lean();
   }
 
   // Get slides for a specific topic
-  static async getSlidesForTopic(topicId: string): Promise<any[]> {
-    return await SlideService.getSlidesByTopic(topicId);
+  static async getSlidesForTopic(topicId: string, limit?: number, skip?: number): Promise<any[]> {
+    return await SlideService.getSlidesByTopic(topicId, limit, skip);
   }
 }
 

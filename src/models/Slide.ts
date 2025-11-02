@@ -1,12 +1,15 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import File from './File';
+import { fetchS3File } from '../middleware/s3fetch';
 
 export interface ISlide extends Document {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   content: any; // Object type for flexible content
   inTopic: mongoose.Types.ObjectId;
   position?: number;
   createdAt: Date;
   updatedAt: Date;
+  resolveFiles: () => Promise<void>;
 }
 
 const SlideSchema = new Schema<ISlide>({
@@ -34,7 +37,7 @@ SlideSchema.pre('save', async function(next) {
   if (this.isNew || this.isModified('inTopic')) {
     if (this.inTopic) {
       // Find the highest position for slides in the same topic
-      const highestSlide = await Slide.findOne(
+      const highestSlide = await (this.constructor as any).findOne(
         { inTopic: this.inTopic },
         { position: 1 }
       ).sort({ position: -1 });
@@ -46,7 +49,25 @@ SlideSchema.pre('save', async function(next) {
   next();
 });
 
+SlideSchema.methods.resolveFiles = async function () {
+  for (const key of Object.keys(this.content)) {
+    const value = this.content[key];
 
+    if (
+      // Either an objectID
+      Types.ObjectId.isValid(value) || 
+      // Or already populated
+      (typeof value === "object" && value?.fileKey && value?._id)
+    ) {
+      const fileDoc = typeof value === "object" ? value : await File.findById(value);
+      if (!fileDoc) continue;
+
+      const url = await fetchS3File(fileDoc.fileKey);
+
+      this.content[key] = url;
+    }
+  }
+};
 
 const Slide = mongoose.model<ISlide>('Slide', SlideSchema);
 

@@ -1,9 +1,9 @@
 {
   "completeReport1": {
     "report": {
-      "reportName": "Mathematics Fundamentals",
-      "reportDescription": "Complete mathematics curriculum covering algebra, geometry, and calculus",
-      "reportImage": "math-course-image-001"
+      "name": "Mathematics Fundamentals",
+      "description": "Complete mathematics curriculum covering algebra, geometry, and calculus",
+      "image": "math-course-image-001"
     },
     "subjects": [
       {
@@ -99,9 +99,9 @@
   },
   "completeReport2": {
     "report": {
-      "reportName": "Computer Science Essentials",
-      "reportDescription": "Comprehensive computer science course covering programming fundamentals and data structures",
-      "reportImage": "cs-course-image-002"
+      "name": "Computer Science Essentials",
+      "description": "Comprehensive computer science course covering programming fundamentals and data structures",
+      "image": "cs-course-image-002"
     },
     "subjects": [
       {
@@ -181,9 +181,9 @@
   },
   "completeReport3": {
     "report": {
-      "reportName": "Physics for Beginners",
-      "reportDescription": "Introduction to fundamental physics concepts and principles",
-      "reportImage": "physics-course-image-003"
+      "name": "Physics for Beginners",
+      "description": "Introduction to fundamental physics concepts and principles",
+      "image": "physics-course-image-003"
     },
     "subjects": [
       {
@@ -247,13 +247,13 @@
     ]
   },
   "simpleReport1": {
-    "reportName": "Quick Reference Guide",
-    "reportDescription": "A simple reference document for common tasks",
-    "reportImage": "reference-image-004"
+    "name": "Quick Reference Guide",
+    "description": "A simple reference document for common tasks",
+    "image": "reference-image-004"
   },
   "simpleReport2": {
-    "reportName": "Project Overview",
-    "reportDescription": "High-level project summary and objectives",
-    "reportImage": "project-image-005"
+    "name": "Project Overview",
+    "description": "High-level project summary and objectives",
+    "image": "project-image-005"
   }
 }

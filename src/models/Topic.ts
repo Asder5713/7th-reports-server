@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ITopic extends Document {
   _id: mongoose.Types.ObjectId;
-  topicName: string;
+  name: string;
   inReport: mongoose.Types.ObjectId;
   position?: number;
   createdAt: Date;
@@ -10,7 +10,7 @@ export interface ITopic extends Document {
 }
 
 const TopicSchema = new Schema<ITopic>({
-  topicName: {
+  name: {
     type: String,
     required: true,
     trim: true
