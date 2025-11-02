@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Slide, { ISlide } from '../models/Slide';
 
 export class SlideService {
@@ -56,7 +57,7 @@ export class SlideService {
     return await query;
   }
 
-  static async getSlidesForInitialFetch(topicIds: string[]) {
+  static async getSlidesForInitialFetch(topicIds: mongoose.Types.ObjectId[]) {
     const slidesResult = await Slide.aggregate([
       {
         $facet: {

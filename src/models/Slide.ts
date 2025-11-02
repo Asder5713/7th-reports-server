@@ -5,7 +5,7 @@ import File from './File';
 import { s3 } from '../config/s3';
 
 export interface ISlide extends Document {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   content: any; // Object type for flexible content
   inTopic: mongoose.Types.ObjectId;
   position?: number;

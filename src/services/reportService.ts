@@ -3,7 +3,6 @@ import { TopicService } from './topicService';
 import { SlideService } from './slideService';
 import { ITopic } from '../models/Topic';
 import { ISlide } from '../models/Slide';
-import mongoose from 'mongoose';
 
 export class ReportService {
   // Get all reports
@@ -76,14 +75,14 @@ export class ReportService {
     for (const topicData of reportData.topics) {
       const savedTopic = await TopicService.createTopic({
         ...topicData.topic,
-        inReport: new mongoose.Types.ObjectId(savedReport._id),
+        inReport: savedReport._id,
       });
 
       // Create slides for this topic
       for (const slideData of topicData.slides) {
         await SlideService.createSlide({
           ...slideData,
-          inTopic: new mongoose.Types.ObjectId(savedTopic._id),
+          inTopic: savedTopic._id,
         });
       }
     }
