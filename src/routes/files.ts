@@ -18,4 +18,4 @@ router.put('/:id', FileController.updateFile);
 // DELETE file
 router.delete('/:id', FileController.deleteFile);
 
-export default router; 
+export default router;

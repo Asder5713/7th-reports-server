@@ -26,7 +26,10 @@ app.use(express.urlencoded({ extended: true }));
 // CORS middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
@@ -37,23 +40,23 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
-  res.json({ 
+  res.json({
     message: 'Welcome to 7th Reports Server!',
     timestamp: new Date().toISOString(),
     status: 'running',
     version: '1.0.0',
-          endpoints: {
-        users: '/api/users',
-        topics: '/api/topics',
-        slides: '/api/slides',
-        reports: '/api/reports',
-        files: '/api/files'
-      }
+    endpoints: {
+      users: '/api/users',
+      topics: '/api/topics',
+      slides: '/api/slides',
+      reports: '/api/reports',
+      files: '/api/files'
+    }
   });
 });
 
 app.get('/health', (req: Request, res: Response) => {
-  res.json({ 
+  res.json({
     status: 'healthy',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
@@ -71,19 +74,19 @@ app.use('/api/files', authenticateRequest, filesRouter);
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     success: false,
     error: 'Something went wrong!',
-    message: err.message 
+    message: err.message
   });
 });
 
 // 404 handler - using a more compatible approach
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ 
+  res.status(404).json({
     success: false,
     error: 'Route not found',
-    path: req.originalUrl 
+    path: req.originalUrl
   });
 });
 
@@ -100,4 +103,4 @@ app.listen(PORT, () => {
   console.log(`   - Files: http://localhost:${PORT}/api/files`);
 });
 
-export default app; 
+export default app;

@@ -10,14 +10,15 @@ export class ReportService {
     const reports = await Report.find()
       .select('_id name description unit image')
       .sort({ position: 1 });
-    await Promise.all(reports.map(report => report?.resolveFiles()));
+    await Promise.all(reports.map((report) => report?.resolveFiles()));
     return reports;
   }
 
   // Get report by ID
   static async getReportById(id: string): Promise<IReport | null> {
-    const report = await Report.findById(id)
-      .select('_id name description unit image');
+    const report = await Report.findById(id).select(
+      '_id name description unit image'
+    );
     await report?.resolveFiles();
     return report;
   }
@@ -31,20 +32,20 @@ export class ReportService {
   }
 
   // Update report
-  static async updateReport(id: string, updateData: Partial<IReport>): Promise<IReport | null> {
-    return await Report.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    )
-      .select('_id name description unit image');
+  static async updateReport(
+    id: string,
+    updateData: Partial<IReport>
+  ): Promise<IReport | null> {
+    return await Report.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    }).select('_id name description unit image');
   }
 
   // Delete report
   static async deleteReport(id: string): Promise<IReport | null> {
     return await Report.findByIdAndDelete(id);
   }
-
 
   // Get topics for a specific report
   static async getTopicsForReport(reportId: string): Promise<any[]> {
@@ -67,14 +68,14 @@ export class ReportService {
     for (const topicData of reportData.topics) {
       const savedTopic = await TopicService.createTopic({
         ...topicData.topic,
-        inReport: savedReport._id,
+        inReport: savedReport._id
       });
 
       // Create slides for this topic
       for (const slideData of topicData.slides) {
         await SlideService.createSlide({
           ...slideData,
-          inTopic: savedTopic._id,
+          inTopic: savedTopic._id
         });
       }
     }
@@ -94,10 +95,11 @@ export class ReportService {
         return null;
       }
 
-      const topicIds = topics.map(topic => topic._id);
+      const topicIds = topics.map((topic) => topic._id);
 
       // Use aggregation with $facet to apply different limits per topic efficiently
-      const slidesResult = await SlideService.getSlidesForInitialFetch(topicIds);
+      const slidesResult =
+        await SlideService.getSlidesForInitialFetch(topicIds);
 
       // Create a map for quick lookup
       const slidesMap = new Map();
@@ -106,16 +108,18 @@ export class ReportService {
       });
 
       // Build the final slides array maintaining topic order
-      const slides = topics.map(topic =>
-        slidesMap.get(topic._id.toString()) || []
+      const slides = topics.map(
+        (topic) => slidesMap.get(topic._id.toString()) || []
       );
-      
+
       return {
         topics,
         slides
       };
     } catch (error) {
-      throw new Error(`Failed to get initial report data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get initial report data: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

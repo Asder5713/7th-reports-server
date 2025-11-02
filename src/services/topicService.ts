@@ -11,8 +11,7 @@ export class TopicService {
 
   // Get topic by ID
   static async getTopicById(id: string): Promise<ITopic | null> {
-    return await Topic.findById(id)
-      .select('-__v');
+    return await Topic.findById(id).select('-__v');
   }
 
   // Create new topic
@@ -23,20 +22,20 @@ export class TopicService {
     });
 
     const savedTopic = await topic.save();
-    const populatedTopic = await Topic.findById(savedTopic._id)
-      .select('-__v');
+    const populatedTopic = await Topic.findById(savedTopic._id).select('-__v');
 
     return populatedTopic!;
   }
 
   // Update topic
-  static async updateTopic(id: string, updateData: Partial<ITopic>): Promise<ITopic | null> {
-    return await Topic.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    )
-      .select('-__v');
+  static async updateTopic(
+    id: string,
+    updateData: Partial<ITopic>
+  ): Promise<ITopic | null> {
+    return await Topic.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    }).select('-__v');
   }
 
   // Delete topic
@@ -53,8 +52,11 @@ export class TopicService {
   }
 
   // Get slides for a specific topic
-  static async getSlidesForTopic(topicId: string, limit?: number, skip?: number): Promise<any[]> {
+  static async getSlidesForTopic(
+    topicId: string,
+    limit?: number,
+    skip?: number
+  ): Promise<any[]> {
     return await SlideService.getSlidesByTopic(topicId, limit, skip);
   }
 }
-

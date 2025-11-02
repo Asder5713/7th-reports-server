@@ -26,4 +26,4 @@ router.patch('/:id/confidentiality', UserController.setConfidentiality);
 
 router.put('/login', UserController.getOrCreateUser);
 
-export default router; 
+export default router;

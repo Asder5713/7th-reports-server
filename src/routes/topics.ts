@@ -23,4 +23,4 @@ router.get('/report/:reportId', topicController.getTopicsByReport);
 
 router.get('/:id/slides', topicController.getSlidesForTopic);
 
-export default router; 
+export default router;

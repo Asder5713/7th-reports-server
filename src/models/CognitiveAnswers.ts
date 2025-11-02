@@ -15,52 +15,55 @@ export interface ICognitiveAnswers extends Document {
 }
 
 const CognitiveAnswersSchema = new Schema<ICognitiveAnswers>({
-//   userId: {
-//     type: Schema.Types.ObjectId,
-//     ref: 'User',
-//     required: true
-//   },
-//   subjectId: {
-//     type: Schema.Types.ObjectId,
-//     ref: 'Subject',
-//     required: true
-//   },
-//   slideId: {
-//     type: Schema.Types.ObjectId,
-//     ref: 'Slide',
-//     required: true
-//   },
-//   question: {
-//     type: String,
-//     required: true,
-//     trim: true
-//   },
-//   answer: {
-//     type: String,
-//     required: true,
-//     trim: true
-//   },
-//   confidence: {
-//     type: Number,
-//     required: true,
-//     min: 1,
-//     max: 5
-//   },
-//   timeSpent: {
-//     type: Number,
-//     required: true,
-//     min: 0
-//   },
-//   isCorrect: {
-//     type: Boolean,
-//     required: true
-//   }
-// }, {
-//   timestamps: true
-// 
+  //   userId: {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'User',
+  //     required: true
+  //   },
+  //   subjectId: {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'Subject',
+  //     required: true
+  //   },
+  //   slideId: {
+  //     type: Schema.Types.ObjectId,
+  //     ref: 'Slide',
+  //     required: true
+  //   },
+  //   question: {
+  //     type: String,
+  //     required: true,
+  //     trim: true
+  //   },
+  //   answer: {
+  //     type: String,
+  //     required: true,
+  //     trim: true
+  //   },
+  //   confidence: {
+  //     type: Number,
+  //     required: true,
+  //     min: 1,
+  //     max: 5
+  //   },
+  //   timeSpent: {
+  //     type: Number,
+  //     required: true,
+  //     min: 0
+  //   },
+  //   isCorrect: {
+  //     type: Boolean,
+  //     required: true
+  //   }
+  // }, {
+  //   timestamps: true
+  //
 });
 
 // Index for efficient querying
 // CognitiveAnswersSchema.index({ userId: 1, subjectId: 1, slideId: 1 });
 
-export default mongoose.model<ICognitiveAnswers>('CognitiveAnswers', CognitiveAnswersSchema); 
+export default mongoose.model<ICognitiveAnswers>(
+  'CognitiveAnswers',
+  CognitiveAnswersSchema
+);

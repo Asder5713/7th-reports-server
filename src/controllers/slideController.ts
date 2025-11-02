@@ -32,7 +32,7 @@ export class SlideController {
         });
         return;
       }
-      
+
       res.json({
         success: true,
         data: slide
@@ -136,7 +136,7 @@ export class SlideController {
     try {
       const { topicId } = req.params;
       const slides = await SlideService.getSlidesByTopic(topicId);
-      
+
       res.json({
         success: true,
         data: slides,
@@ -151,4 +151,3 @@ export class SlideController {
     }
   }
 }
-

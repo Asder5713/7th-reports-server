@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/7th-reports';
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/7th-reports';
 
 export const connectDB = async (): Promise<void> => {
   try {
@@ -43,4 +44,4 @@ process.on('SIGINT', async () => {
 process.on('SIGTERM', async () => {
   await disconnectDB();
   process.exit(0);
-}); 
+});

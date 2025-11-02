@@ -23,4 +23,4 @@ router.delete('/:id', ReportController.deleteReport);
 
 router.get('/:id/initialFetch', ReportController.getInitialReportData);
 
-export default router; 
+export default router;

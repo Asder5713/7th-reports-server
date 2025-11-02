@@ -7,14 +7,13 @@ export class SlideService {
     const slides = await Slide.find()
       .select('-__v')
       .sort({ position: 1, createdAt: -1 });
-    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    await Promise.all(slides.map((slide) => slide?.resolveFiles()));
     return slides;
   }
 
   // Get slide by ID
   static async getSlideById(id: string): Promise<ISlide | null> {
-    const slide = await Slide.findById(id)
-      .select('-__v');
+    const slide = await Slide.findById(id).select('-__v');
     await slide?.resolveFiles();
     return slide;
   }
@@ -23,20 +22,21 @@ export class SlideService {
   static async createSlide(slideData: Partial<ISlide>): Promise<ISlide> {
     const slide = new Slide({
       content: slideData.content,
-      inTopic: slideData.inTopic,
+      inTopic: slideData.inTopic
     });
 
     return await slide.save();
   }
 
   // Update slide
-  static async updateSlide(id: string, updateData: Partial<ISlide>): Promise<ISlide | null> {
-    return await Slide.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    )
-      .select('-__v');
+  static async updateSlide(
+    id: string,
+    updateData: Partial<ISlide>
+  ): Promise<ISlide | null> {
+    return await Slide.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    }).select('-__v');
   }
 
   // Delete slide
@@ -45,21 +45,25 @@ export class SlideService {
   }
 
   // Get slides by topic
-  static async getSlidesByTopic(topicId: string, limit?: number, skip?: number): Promise<ISlide[]> {
+  static async getSlidesByTopic(
+    topicId: string,
+    limit?: number,
+    skip?: number
+  ): Promise<ISlide[]> {
     const query = Slide.find({ inTopic: topicId })
       .select('_id content position')
       .sort({ position: 1 });
-    
+
     if (skip) {
       query.skip(skip);
     }
-    
+
     if (limit) {
       query.limit(limit);
     }
-    
+
     const slides = await query;
-    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    await Promise.all(slides.map((slide) => slide?.resolveFiles()));
     return slides;
   }
 
@@ -104,7 +108,9 @@ export class SlideService {
       {
         $group: {
           _id: '$allResults.inTopic',
-          slides: { $push: { _id: '$allResults._id', content: '$allResults.content' } }
+          slides: {
+            $push: { _id: '$allResults._id', content: '$allResults.content' }
+          }
         }
       },
       {
@@ -115,8 +121,7 @@ export class SlideService {
       }
     ]);
 
-    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    await Promise.all(slides.map((slide) => slide?.resolveFiles()));
     return slides;
   }
 }
-

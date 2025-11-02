@@ -31,7 +31,7 @@ export class FileController {
         });
         return;
       }
-      
+
       res.json({
         success: true,
         data: file

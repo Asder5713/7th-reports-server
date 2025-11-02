@@ -31,7 +31,7 @@ export class UserController {
         });
         return;
       }
-      
+
       res.json({
         success: true,
         data: user
@@ -65,7 +65,10 @@ export class UserController {
         data: user
       });
     } catch (error) {
-      if (error instanceof Error && error.message === 'User with this army ID already exists') {
+      if (
+        error instanceof Error &&
+        error.message === 'User with this army ID already exists'
+      ) {
         res.status(409).json({
           success: false,
           error: 'User with this army ID already exists'
@@ -138,10 +141,13 @@ export class UserController {
   }
 
   // GET check user permissions
-  static async checkUserPermissions(req: Request, res: Response): Promise<void> {
+  static async checkUserPermissions(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { userId } = req.params;
-      
+
       if (!userId) {
         res.status(400).json({
           success: false,
@@ -151,7 +157,7 @@ export class UserController {
       }
 
       const permissions = await UserService.checkUserPermissions(userId);
-      
+
       res.json({
         success: true,
         data: permissions
@@ -169,7 +175,7 @@ export class UserController {
   static async setConfidentiality(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      
+
       if (!id) {
         res.status(400).json({
           success: false,
@@ -178,7 +184,9 @@ export class UserController {
         return;
       }
 
-      const user = await UserService.updateUser(id, { didConfirmConfidentiality: true });
+      const user = await UserService.updateUser(id, {
+        didConfirmConfidentiality: true
+      });
       if (!user) {
         res.status(404).json({
           success: false,
@@ -227,4 +235,3 @@ export class UserController {
     }
   }
 }
-

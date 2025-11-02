@@ -21,4 +21,4 @@ router.delete('/:id', SlideController.deleteSlide);
 // GET slides by topic
 router.get('/topic/:topicId', SlideController.getSlidesByTopic);
 
-export default router; 
+export default router;

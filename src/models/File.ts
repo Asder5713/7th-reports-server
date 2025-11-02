@@ -8,19 +8,22 @@ export interface IFile extends Document {
   updatedAt: Date;
 }
 
-const FileSchema = new Schema<IFile>({
-  fileKey: {
-    type: String,
-    required: true,
-    trim: true
+const FileSchema = new Schema<IFile>(
+  {
+    fileKey: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    mimeType: {
+      type: String,
+      required: true,
+      trim: true
+    }
   },
-  mimeType: {
-    type: String,
-    required: true,
-    trim: true
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
-export default mongoose.model<IFile>('File', FileSchema); 
+export default mongoose.model<IFile>('File', FileSchema);

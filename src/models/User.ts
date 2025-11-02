@@ -11,33 +11,36 @@ export interface IUser extends Document {
   didConfirmConfidentiality: boolean;
 }
 
-const UserSchema = new Schema<IUser>({
-  rank: {
-    type: String,
-    required: true,
-    trim: true
+const UserSchema = new Schema<IUser>(
+  {
+    rank: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    armyId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
+    lastVisitedSlide: {
+      type: Schema.Types.ObjectId,
+      ref: 'Slide',
+      default: null
+    },
+    didPassBiases: {
+      type: Boolean,
+      default: false
+    },
+    didConfirmConfidentiality: {
+      type: Boolean,
+      default: false
+    }
   },
-  armyId: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
-  lastVisitedSlide: {
-    type: Schema.Types.ObjectId,
-    ref: 'Slide',
-    default: null
-  },
-  didPassBiases: {
-    type: Boolean,
-    default: false
-  },
-  didConfirmConfidentiality: {
-    type: Boolean,
-    default: false
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
-export default mongoose.model<IUser>('User', UserSchema); 
+export default mongoose.model<IUser>('User', UserSchema);

@@ -17,7 +17,10 @@ export class UserService {
   }
 
   // Create new user
-  static async createUser(userData: { rank: string; armyId: string }): Promise<IUser> {
+  static async createUser(userData: {
+    rank: string;
+    armyId: string;
+  }): Promise<IUser> {
     // Check if user already exists
     const existingUser = await User.findOne({ armyId: userData.armyId });
     if (existingUser) {
@@ -29,12 +32,14 @@ export class UserService {
   }
 
   // Update user
-  static async updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
-    return await User.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    ).select('-__v');
+  static async updateUser(
+    id: string,
+    updateData: Partial<IUser>
+  ): Promise<IUser | null> {
+    return await User.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    }).select('-__v');
   }
 
   // Delete user
@@ -51,7 +56,7 @@ export class UserService {
       }
 
       // If rank is "טוראי" (Private), check if they passed biases
-      if (user.rank === "טוראי") {
+      if (user.rank === 'טוראי') {
         if (user.didPassBiases) {
           return { hasAccess: true, accessLevel: 'limited' };
         } else {
@@ -72,4 +77,3 @@ export class UserService {
     return user;
   }
 }
-

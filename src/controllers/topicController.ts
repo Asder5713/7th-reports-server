@@ -33,7 +33,7 @@ export class topicController {
         });
         return;
       }
-      
+
       res.json({
         success: true,
         data: topic
@@ -137,7 +137,7 @@ export class topicController {
     try {
       const { reportId } = req.params;
       const topics = await TopicService.getTopicsByReport(reportId);
-      
+
       res.json({
         success: true,
         data: topics,
@@ -156,10 +156,10 @@ export class topicController {
     try {
       const { id } = req.params;
       const { limit, skip } = req.query;
-      
+
       const limitNum = limit ? parseInt(limit as string) : undefined;
       const skipNum = skip ? parseInt(skip as string) : undefined;
-      
+
       const slides = await SlideService.getSlidesByTopic(id, limitNum, skipNum);
 
       if (slides.length === 0) {
@@ -183,4 +183,3 @@ export class topicController {
     }
   }
 }
-

@@ -91,7 +91,10 @@ export class ReportController {
       if (unit !== undefined) updateData.unit = unit;
       if (position !== undefined) updateData.position = position;
 
-      const report = await ReportService.updateReport(req.params.id, updateData);
+      const report = await ReportService.updateReport(
+        req.params.id,
+        updateData
+      );
       if (!report) {
         res.status(404).json({
           success: false,
@@ -139,7 +142,10 @@ export class ReportController {
   }
 
   // POST create complete report with topics and slides
-  static async createCompleteReport(req: Request, res: Response): Promise<void> {
+  static async createCompleteReport(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { report, topics } = req.body;
 
@@ -171,8 +177,11 @@ export class ReportController {
         }
       }
 
-      const completeReport = await ReportService.createCompleteReport({ report, topics });
-      
+      const completeReport = await ReportService.createCompleteReport({
+        report,
+        topics
+      });
+
       res.status(201).json({
         success: true,
         data: completeReport,
@@ -187,9 +196,14 @@ export class ReportController {
     }
   }
 
-  static async getInitialReportData(req: Request, res: Response): Promise<void> {
+  static async getInitialReportData(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
-      const reportData = await ReportService.getInitialReportData(req.params.id);
+      const reportData = await ReportService.getInitialReportData(
+        req.params.id
+      );
 
       if (!reportData) {
         res.status(404).json({

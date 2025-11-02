@@ -9,28 +9,31 @@ export interface ITopic extends Document {
   updatedAt: Date;
 }
 
-const TopicSchema = new Schema<ITopic>({
-  name: {
-    type: String,
-    required: true,
-    trim: true
+const TopicSchema = new Schema<ITopic>(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    inReport: {
+      type: Schema.Types.ObjectId,
+      ref: 'Report'
+    },
+    position: {
+      type: Number
+    }
   },
-  inReport: {
-    type: Schema.Types.ObjectId,
-    ref: 'Report'
-  },
-  position: {
-    type: Number,
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
 // Add compound index to ensure unique position per report
 TopicSchema.index({ inReport: 1, position: 1 }, { unique: true });
 
 // Pre-save middleware to auto-increment position
-TopicSchema.pre('save', async function(next) {
+TopicSchema.pre('save', async function (next) {
   // Only run this middleware if the document is new or inReport has changed
   if (this.isNew || this.isModified('inReport')) {
     if (this.inReport) {
@@ -39,7 +42,7 @@ TopicSchema.pre('save', async function(next) {
         { inReport: this.inReport },
         { position: 1 }
       ).sort({ position: -1 });
-      
+
       // Set position to 0 if no topics exist, otherwise increment
       this.position = highestTopic ? highestTopic.position! + 1 : 0;
     }

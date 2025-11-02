@@ -1,6 +1,6 @@
-import mongoose, { Document, Schema } from "mongoose";
-import File from "./File";
-import { fetchS3File } from "../middleware/s3fetch";
+import mongoose, { Document, Schema } from 'mongoose';
+import File from './File';
+import { fetchS3File } from '../middleware/s3fetch';
 
 export interface IReport extends Document {
   _id: mongoose.Types.ObjectId;
@@ -19,37 +19,40 @@ const ReportSchema = new Schema<IReport>(
     name: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     description: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     unit: {
       type: String,
-      required: true,
+      required: true
     },
     image: {
       type: Schema.Types.ObjectId,
-      ref: "File",
+      ref: 'File'
     },
     position: {
-      type: Number,
-    },
+      type: Number
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
 ReportSchema.methods.resolveFiles = async function () {
   if (this.image) {
-    const file = typeof this.image === "object" ? this.image : await File.findById(this.image);
+    const file =
+      typeof this.image === 'object'
+        ? this.image
+        : await File.findById(this.image);
     if (!file) return;
     const url = await fetchS3File(file.fileKey);
     this.image = url;
   }
 };
 
-export default mongoose.model<IReport>("Report", ReportSchema);
+export default mongoose.model<IReport>('Report', ReportSchema);

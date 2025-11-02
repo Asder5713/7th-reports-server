@@ -18,12 +18,14 @@ export class FileService {
   }
 
   // Update file
-  static async updateFile(id: string, updateData: Partial<IFile>): Promise<IFile | null> {
-    return await File.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    ).select('-__v');
+  static async updateFile(
+    id: string,
+    updateData: Partial<IFile>
+  ): Promise<IFile | null> {
+    return await File.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    }).select('-__v');
   }
 
   // Delete file
