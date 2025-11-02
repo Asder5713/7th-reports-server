@@ -4,15 +4,19 @@ import Slide, { ISlide } from '../models/Slide';
 export class SlideService {
   // Get all slides
   static async getAllSlides(): Promise<ISlide[]> {
-    return await Slide.find()
+    const slides = await Slide.find()
       .select('-__v')
       .sort({ position: 1, createdAt: -1 });
+    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    return slides;
   }
 
   // Get slide by ID
   static async getSlideById(id: string): Promise<ISlide | null> {
-    return await Slide.findById(id)
+    const slide = await Slide.findById(id)
       .select('-__v');
+    await slide?.resolveFiles();
+    return slide;
   }
 
   // Create new slide
@@ -43,7 +47,7 @@ export class SlideService {
   // Get slides by topic
   static async getSlidesByTopic(topicId: string, limit?: number, skip?: number): Promise<ISlide[]> {
     const query = Slide.find({ inTopic: topicId })
-      .select('_id content')
+      .select('_id content position')
       .sort({ position: 1 });
     
     if (skip) {
@@ -54,11 +58,13 @@ export class SlideService {
       query.limit(limit);
     }
     
-    return await query;
+    const slides = await query;
+    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    return slides;
   }
 
   static async getSlidesForInitialFetch(topicIds: mongoose.Types.ObjectId[]) {
-    const slidesResult = await Slide.aggregate([
+    const slides: ISlide[] = await Slide.aggregate([
       {
         $facet: {
           firstTopic: [
@@ -109,7 +115,8 @@ export class SlideService {
       }
     ]);
 
-    return slidesResult;
+    await Promise.all(slides.map(slide => slide?.resolveFiles()));
+    return slides;
   }
 }
 

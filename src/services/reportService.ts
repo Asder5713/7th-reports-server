@@ -7,34 +7,27 @@ import { ISlide } from '../models/Slide';
 export class ReportService {
   // Get all reports
   static async getAllReports(): Promise<IReport[]> {
-    return await Report.find()
-      .populate('image')
+    const reports = await Report.find()
       .select('_id name description unit image')
       .sort({ position: 1 });
+    await Promise.all(reports.map(report => report?.resolveFiles()));
+    return reports;
   }
 
   // Get report by ID
   static async getReportById(id: string): Promise<IReport | null> {
-    return await Report.findById(id)
-      .populate('image')
+    const report = await Report.findById(id)
       .select('_id name description unit image');
+    await report?.resolveFiles();
+    return report;
   }
 
   // Create new report
   static async createReport(reportData: Partial<IReport>): Promise<IReport> {
-    const report = new Report({
-      reportName: reportData.reportName,
-      reportDescription: reportData.reportDescription,
-      reportImage: reportData.reportImage,
-      position: reportData.position
-    });
+    const report = new Report(reportData);
 
-    const savedReport = await report.save();
-    const populatedReport = await Report.findById(savedReport._id)
-      .populate('reportImage')
-      .select('_id reportName reportDescription reportImage');
-
-    return populatedReport!;
+    await report.save();
+    return report;
   }
 
   // Update report
@@ -44,7 +37,6 @@ export class ReportService {
       updateData,
       { new: true, runValidators: true }
     )
-      .populate('image')
       .select('_id name description unit image');
   }
 
@@ -117,9 +109,7 @@ export class ReportService {
       const slides = topics.map(topic =>
         slidesMap.get(topic._id.toString()) || []
       );
-
-      await Promise.all(slides.map(slide => slide.resolveFiles()));
-
+      
       return {
         topics,
         slides
@@ -129,4 +119,3 @@ export class ReportService {
     }
   }
 }
-

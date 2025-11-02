@@ -189,7 +189,6 @@ export class ReportController {
 
   static async getInitialReportData(req: Request, res: Response): Promise<void> {
     try {
-
       const reportData = await ReportService.getInitialReportData(req.params.id);
 
       if (!reportData) {

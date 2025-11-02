@@ -1,8 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import File from './File';
-import { s3 } from '../config/s3';
+import { fetchS3File } from '../middleware/s3fetch';
 
 export interface ISlide extends Document {
   _id: mongoose.Types.ObjectId;
@@ -52,8 +50,6 @@ SlideSchema.pre('save', async function(next) {
 });
 
 SlideSchema.methods.resolveFiles = async function () {
-  const S3_BUCKET = process.env.S3_BUCKET!;
-  
   for (const key of Object.keys(this.content)) {
     const value = this.content[key];
 
@@ -66,18 +62,9 @@ SlideSchema.methods.resolveFiles = async function () {
       const fileDoc = typeof value === "object" ? value : await File.findById(value);
       if (!fileDoc) continue;
 
-      const command = new GetObjectCommand({
-        Bucket: S3_BUCKET,
-        Key: fileDoc.fileKey,
-      });
+      const url = await fetchS3File(fileDoc.fileKey);
 
-      const url = await getSignedUrl(s3, command, { expiresIn: +process.env.SIGNED_URL_EXPIRATION_TIME! });
-
-      this.content[key] = {
-        _id: fileDoc._id,
-        mimeType: fileDoc.mimeType,
-        url,
-      };
+      this.content[key] = url;
     }
   }
 };

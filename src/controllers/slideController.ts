@@ -7,7 +7,6 @@ export class SlideController {
   static async getAllSlides(req: Request, res: Response): Promise<void> {
     try {
       const slides = await SlideService.getAllSlides();
-      await Promise.all(slides.map(slide => slide.resolveFiles()));
       res.json({
         success: true,
         data: slides,
@@ -34,7 +33,6 @@ export class SlideController {
         return;
       }
       
-      await slide.resolveFiles();
       res.json({
         success: true,
         data: slide
